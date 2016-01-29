@@ -21,7 +21,7 @@ getSchedules()
 	}
 ]
 
-getSchedule()
+getSchedule(String id)
 {
 	period: [
 	{
