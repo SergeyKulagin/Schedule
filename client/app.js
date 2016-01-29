@@ -19,7 +19,7 @@ var AddUpdateSchedule = React.createClass({
 			    <label className="col-md-6">Start date</label>
 				<input className="col-md-6" type="date" name="startDate"/>
 			</div>
-			<ActivityItems activities={this.state.activities} onActivitiesChange={this.onActivitiesChange}/>	
+			<ActivityItems activities={this.state.activities} />	
 			<div className="row">
 				  <div className="schedule-item-add-btn" onClick={this.onPeriodAdd}/>
 			</div>
@@ -50,11 +50,6 @@ var AddUpdateSchedule = React.createClass({
 });
 
 var ActivityItems = React.createClass({
-	onChange: function(activity){
-		var activities = this.props.activities;
-		activities[activity.key] = activity;		
-		this.props.onActivitiesChange(activities);		
-	},
 	render: function(){
 		var activities = this.props.activities;
 		if(!activities){
@@ -72,13 +67,15 @@ var ActivityItems = React.createClass({
 
 var ActivityItem =  React.createClass({
 	getInitialState: function(){
-		return {
-			id: this.props.id,
-			name: this.props.model.name
-		};
+		return this.props.model;
 	},
 	componentDidMount: function(){
-		$('select[name="colorpicker"]').simplecolorpicker();
+		var context = this;
+		$('select[name="colorpicker"]')
+		.simplecolorpicker({picker: true})
+		.on('change', function(){
+			context.props.model.color = $('select[name="colorpicker"]').val();
+		});
 	},
 	render: function(){
 		return <div className="activity-item">
@@ -111,7 +108,7 @@ var ActivityItem =  React.createClass({
 	},
 	onNameChange: function(event){
 		 this.setState({name: event.target.value});
-		 this.props.onChange(this.state);
+		 this.props.model.name = event.target.value;		 
 	}
 });
 
