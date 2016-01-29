@@ -13,18 +13,18 @@ var AddUpdateSchedule = React.createClass({
 		return <div className="add-or-update-schedule-container">
 			<div className="row">
 			    <label className="col-md-6">Schedule name</label>
-				<input className="col-md-6" type="text" name="scheduleName"/>
+				<input className="col-md-6" type="text" name="scheduleName" onChange={this.onNameChange}/>
 			</div>
 			<div className="row">
 			    <label className="col-md-6">Start date</label>
 				<input className="col-md-6" type="date" name="startDate"/>
 			</div>
-			<ActivityItems activities={this.state.activities}/>	
+			<ActivityItems activities={this.state.activities} onActivitiesChange={this.onActivitiesChange}/>	
 			<div className="row">
 				  <div className="schedule-item-add-btn" onClick={this.onPeriodAdd}/>
 			</div>
 			<div className="row">
-				<input type="button" name="save" value="Save"/>
+				<input type="button" name="save" value="Save" onClick={this.onSave}/>
 			</div>
 		</div>;
 	},
@@ -38,18 +38,32 @@ var AddUpdateSchedule = React.createClass({
 		activities.push(defaultActivity);
     	this.setState({activities:activities});
   	},
+  	onNameChange: function(event){
+  		this.setState({name: event.target.value});	
+  	},
+  	onActivitiesChange:function(activities){
+  		console.log(activities);
+  	},
+  	onSave: function(){
+  		console && console.log(this.state);
+  	}
 });
 
 var ActivityItems = React.createClass({
+	onChange: function(activity){
+		var activities = this.props.activities;
+		activities[activity.key] = activity;		
+		this.props.onActivitiesChange(activities);		
+	},
 	render: function(){
 		var activities = this.props.activities;
 		if(!activities){
 			return <div/>;
 		}
 		var activitiesWidgets = [];
-		for (var i = activities.length - 1; i >= 0; i--) {
+		for (var i = 0; i < activities.length; i++) {
 			var activity = activities[i];
-			activitiesWidgets.push(<ActivityItem model={activity} id={activity.id}/>);
+			activitiesWidgets.push(<ActivityItem model={activity} key={i} onChange={this.onChange}/>);
 		};
 		return <div>{activitiesWidgets}</div>;
 	}
@@ -59,6 +73,7 @@ var ActivityItems = React.createClass({
 var ActivityItem =  React.createClass({
 	getInitialState: function(){
 		return {
+			id: this.props.id,
 			name: this.props.model.name
 		};
 	},
@@ -94,8 +109,9 @@ var ActivityItem =  React.createClass({
 		          </div>		      	  
 		    	</div>;	
 	},
-	onNameChange: function(){
+	onNameChange: function(event){
 		 this.setState({name: event.target.value});
+		 this.props.onChange(this.state);
 	}
 });
 
@@ -117,7 +133,6 @@ var ScheduleItemPeriods = React.createClass({
 var ScheduleItemPeriod = React.createClass({
 	render: function(){		
 		return <div>
-					
 					<label>Days</label>	
 					<input></input>
 				</div>;
