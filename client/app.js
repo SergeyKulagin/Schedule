@@ -17,7 +17,7 @@ var AddUpdateSchedule = React.createClass({
 			</div>
 			<div className="row">
 			    <label className="col-md-6">Start date</label>
-				<input className="col-md-6" type="date" name="startDate"/>
+				<input className="col-md-6" type="date" name="startDate" onChange={this.onStartDateChange}/>
 			</div>
 			<ActivityItems activities={this.state.activities} />	
 			<div className="row">
@@ -41,11 +41,21 @@ var AddUpdateSchedule = React.createClass({
   	onNameChange: function(event){
   		this.setState({name: event.target.value});	
   	},
+  	onStartDateChange: function(event){
+  		this.setState({start_date: event.target.value});	
+  	},
   	onActivitiesChange:function(activities){
   		console.log(activities);
   	},
   	onSave: function(){
   		console && console.log(this.state);
+  		$.ajax("/service/saveSchedule")
+  		.done(function(data){
+  			window.alert("Schedule was saved");
+  		})
+  		.error(function(data){
+  			window.alert("Error saving the schedule");
+  		});
   	}
 });
 
