@@ -1,3 +1,28 @@
 .add-or-update-schedule-container {
 	width: 310px;
+	margin: 20px;
+}
+
+.schedule-item-add-btn {
+	width: 16px;
+	height: 16px;
+	background: url("plus_icon.png");
+	cursor: pointer;
+	float: right;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.editable-input {
+	border: transparent;
+}
+
+.editable-input:focus {
+	border: 2px;
+}
+
+.activity-item {
+	margin-top: 2px;
 }
