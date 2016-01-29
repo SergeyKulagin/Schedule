@@ -12,12 +12,20 @@ var AddUpdateSchedule = React.createClass({
 	render: function(){
 		return <div className="add-or-update-schedule-container">
 			<div className="row">
-			    <label className="col-md-6">Schedule name</label>
-				<input className="col-md-6" type="text" name="scheduleName" onChange={this.onNameChange}/>
+			   <div className="col-md-6">
+			   		<label>Schedule name:</label>
+			   </div>
+			   <div className="col-md-6">
+			   		<input type="text" name="scheduleName" onChange={this.onNameChange}/>
+			   </div>			    			
 			</div>
 			<div className="row">
-			    <label className="col-md-6">Start date</label>
-				<input className="col-md-6" type="date" name="startDate" onChange={this.onStartDateChange}/>
+			   <div className="col-md-6">
+			    <label>Start date:</label>
+			   </div>
+			   <div className="col-md-6">
+				<input type="date" name="startDate" onChange={this.onStartDateChange}/>
+				</div>
 			</div>
 			<ActivityItems activities={this.state.activities} />	
 			<div className="row">
@@ -82,7 +90,7 @@ var ActivityItem =  React.createClass({
 	componentDidMount: function(){
 		var context = this;
 		$('select[name="colorpicker"]')
-		.simplecolorpicker({picker: true})
+		.simplecolorpicker({})
 		.on('change', function(){
 			context.props.model.color = $('select[name="colorpicker"]').val();
 		});
@@ -90,10 +98,15 @@ var ActivityItem =  React.createClass({
 	render: function(){
 		return <div className="activity-item">
 		          <div className="row">
-		          	<input className="col-md-6 bold" value={this.state.name} onChange={this.onNameChange}></input>
+		            <div className="col-md-6">
+		          		<label>Activity name:</label>
+		            </div>
+		            <div className="col-md-6">
+		          		<input value={this.state.name} onChange={this.onNameChange}></input>
+		            </div>
 		          </div>
 		            <div className="row">
-		               <div className="col-md-6"><label >Color</label></div>
+		               <div className="col-md-6"><label >Color:</label></div>
 		                <div className="col-md-6">
 		                  <select className="colorPicker" name="colorpicker">
 								<option value="#7bd148">Green</option>
@@ -112,9 +125,13 @@ var ActivityItem =  React.createClass({
 				  		   </div>	
 		          </div>		          		          
 		          <div className="row">
-		            <label className="col-md-6">Periods: </label>
-		          	<ScheduleItemPeriods className="col-md-6" items={this.state.days}/>
-		          	<div onClick={this.onDayAdd}>Add day</div>
+		            <div className="col-md-6">
+		            	<label >Periods: </label>
+		            </div>
+		            <div className="col-md-6">
+		            	<ScheduleItemPeriods className="col-md-6" items={this.state.days}/>
+		          	    <div onClick={this.onDayAdd}>Add day</div>
+		            </div>		          	
 		          </div>		      	  
 		    	</div>;	
 	},
