@@ -1,26 +1,56 @@
 package com.helmes.schedule;
 
-import java.util.concurrent.atomic.AtomicLong;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.helmes.schedule.bean.ScheduleCalendarItem;
+import com.helmes.schedule.bean.ScheduleCalendarList;
+import com.helmes.schedule.bean.ScheduleListItem;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 @org.springframework.web.bind.annotation.RestController
 public class RestAPIController {
 
-    private static final String template = "Hello, %s!";
-    private final AtomicLong counter = new AtomicLong();
-
-    @RequestMapping("/greeting")
-    public Greeting greeting(@RequestParam(value="name", defaultValue="World") String name) {
-        return new Greeting(counter.incrementAndGet(),
-                            String.format(template, name));
+    @RequestMapping("/getSchedules")
+    public List<ScheduleListItem> getSchedules() {
+        List<ScheduleListItem> scheduleListItems = new ArrayList<>();
+        scheduleListItems.add(new ScheduleListItem(1, "asdad"));
+        return scheduleListItems;
     }
 
-    @RequestMapping("/")
-    public Greeting greeting(@RequestParam(value="name", defaultValue="World") String name) {
-        return new Greeting(counter.incrementAndGet(),
-                String.format(template, name));
+    @RequestMapping("/getSchedule")
+    public ScheduleCalendarList getSchedules(@RequestParam(value="id") String id) {
+        List<ScheduleCalendarItem> scheduleCalendarItemItems = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        scheduleCalendarItemItems.add(new ScheduleCalendarItem("#ff0077", now.format(formatter), "На складе"));
+
+        ScheduleCalendarList scheduleCalendarList = new ScheduleCalendarList();
+        scheduleCalendarList.setPeriod(scheduleCalendarItemItems);
+        return scheduleCalendarList;
+    }
+
+//    saveSchedule(STring jsonSchedule);
+//    {
+//        _id: "",
+//                name: "",
+//            start_date: "", //js ISO
+//            end_date: "", //js ISO
+//            period: [
+//        {
+//            name: "На складе",
+//                    days : [],//js ISO
+//            color: "#000000"
+//        }
+//        ]
+//    }
+
+    @RequestMapping("/saveSchedule")
+    public void saveSchedule(@RequestParam(value="jsonSchedule") String jsonSchedule) {
+        System.out.println(jsonSchedule);
     }
 
 }
