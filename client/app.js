@@ -30,7 +30,7 @@ var AddUpdateSchedule = React.createClass({
 	},
 	onPeriodAdd: function(event) {
 		var defaultActivity = {
-			name: "Default",
+			name: "",
 			color: "",
 			days: []
 		};
@@ -101,38 +101,54 @@ var ActivityItem =  React.createClass({
 				  		   </select>
 				  		   </div>	
 		          </div>		          		          
-		          <div className="col-md-6">
-		          	<ScheduleItemPeriods className="col-md-5" items={this.props.items}/>
+		          <div className="row">
+		            <label className="col-md-6">Periods: </label>
+		          	<ScheduleItemPeriods className="col-md-6" items={this.state.days}/>
+		          	<div onClick={this.onDayAdd}>Add day</div>
 		          </div>		      	  
 		    	</div>;	
 	},
 	onNameChange: function(event){
 		 this.setState({name: event.target.value});
 		 this.props.model.name = event.target.value;		 
+	},
+	onDayAdd: function(event){
+		console.log("On day add");
+		var days = this.state.days;
+		days.push("");
+		this.setState({days: days});
 	}
 });
 
 var ScheduleItemPeriods = React.createClass({
+	onDateChange: function(itemHolder){
+		this.props.items[itemHolder.id] = itemHolder.day;
+	},
 	render: function(){
 		var items = this.props.items;
 		if(!items){
 			return <div/>;
 		}
+		console.log("Render schedule item perios")
 		var itemsWidgets = [];
-		for (var i = items.length - 1; i >= 0; i--) {
+		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
-			itemsWidgets.push(<ScheduleItemPeriod id={this.props.day}/>);
+			var dateHolder = {day: item, id: i};
+			itemsWidgets.push(<ScheduleItemPeriod key={i} day={dateHolder} onDateChange={this.onDateChange}/>);
 		};
-		return <div>{itemsWidgets}</div>;
+		return <div>
+					<div>{itemsWidgets}</div>					
+				</div>;
 	}
 });
 
 var ScheduleItemPeriod = React.createClass({
+	onDateChange: function(event){
+	     this.props.day.day = event.target.value; 		
+	     this.props.onDateChange(this.props.day);  
+	},
 	render: function(){		
-		return <div>
-					<label>Days</label>	
-					<input></input>
-				</div>;
+		return <input type="date" onChange={this.onDateChange}></input>;
 	}
 });
 
