@@ -1,3 +1,7 @@
+var Settings = {
+	dateFormat: "yyyy-mm-dd"
+};
+
 var App = React.createClass({
 	render: function () {
 		return <AddUpdateSchedule/>;
@@ -6,17 +10,30 @@ var App = React.createClass({
 
 
 var AddUpdateSchedule = React.createClass({
+	
+	componentDidMount: function(){
+		var context = this;
+		$(ReactDOM.findDOMNode(this)).find(".date").datepicker({
+        	format: Settings.dateFormat,
+        	multidate: false,
+    		autoclose: true
+    	}).on("changeDate", function(event){
+				console.log("on date change");
+	     		var date = event.currentTarget.value; 	  
+	     		context.setState({start_date: date});	   			     			     	
+		});	;
+	},
 	getInitialState: function(){
 		return {activities:[]};
 	},
 	render: function(){
-		return <div className="add-or-update-schedule-container">
+		return <div className="add-or-update-schedule-container container-fluid">
 			<div className="row">
 			   <div className="col-md-6">
 			   		<label>Schedule name:</label>
 			   </div>
 			   <div className="col-md-6">
-			   		<input type="text" name="scheduleName" onChange={this.onNameChange}/>
+			   		<input type="text" placeholder="e.g. A bandit schedule" className="form-control" name="scheduleName" onChange={this.onNameChange}/>
 			   </div>			    			
 			</div>
 			<div className="row">
@@ -24,15 +41,19 @@ var AddUpdateSchedule = React.createClass({
 			    <label>Start date:</label>
 			   </div>
 			   <div className="col-md-6">
-				<input type="date" name="startDate" onChange={this.onStartDateChange}/>
+				<input name="startDate" placeholder={Settings.dateFormat}  className="form-control date" onChange={this.onStartDateChange}/>
 				</div>
 			</div>
 			<ActivityItems activities={this.state.activities} />	
 			<div className="row">
+				<div className="col-md-12"> 	
 				  <div className="schedule-item-add-btn" onClick={this.onPeriodAdd}/>
+				</div>  
 			</div>
 			<div className="row">
-				<input type="button" name="save" value="Save" onClick={this.onSave}/>
+			    <div className="col-md-12">
+			    	<input type="button" className="btn btn-default pull-right" name="save" value="Save" onClick={this.onSave}/>
+			    </div>				
 			</div>
 		</div>;
 	},
@@ -49,9 +70,6 @@ var AddUpdateSchedule = React.createClass({
   	onNameChange: function(event){
   		this.setState({name: event.target.value});	
   	},
-  	onStartDateChange: function(event){
-  		this.setState({start_date: event.target.value});	
-  	},
   	onActivitiesChange:function(activities){
   		console.log(activities);
   	},
@@ -59,10 +77,10 @@ var AddUpdateSchedule = React.createClass({
   		console && console.log(this.state);
   		$.ajax("/service/saveSchedule")
   		.done(function(data){
-  			window.alert("Schedule was saved");
+  			console.log("Schedule was saved");
   		})
   		.error(function(data){
-  			window.alert("Error saving the schedule");
+  			console.log("Error saving the schedule");
   		});
   	}
 });
@@ -102,7 +120,7 @@ var ActivityItem =  React.createClass({
 		          		<label>Activity name:</label>
 		            </div>
 		            <div className="col-md-6">
-		          		<input value={this.state.name} onChange={this.onNameChange}></input>
+		          		<input value={this.state.name} placeholder="e.g. Rob the bank" className="form-control" onChange={this.onNameChange}></input>
 		            </div>
 		          </div>
 		            <div className="row">
@@ -126,11 +144,10 @@ var ActivityItem =  React.createClass({
 		          </div>		          		          
 		          <div className="row">
 		            <div className="col-md-6">
-		            	<label >Periods: </label>
+		            	<label >Days: </label>
 		            </div>
 		            <div className="col-md-6">
-		            	<ScheduleItemPeriods className="col-md-6" items={this.state.days}/>
-		          	    <div onClick={this.onDayAdd}>Add day</div>
+		            	<DaysItems className="col-md-12" days={this.state.days}/>		          	    
 		            </div>		          	
 		          </div>		      	  
 		    	</div>;	
@@ -147,7 +164,7 @@ var ActivityItem =  React.createClass({
 	}
 });
 
-var ScheduleItemPeriods = React.createClass({
+/*var ScheduleItemPeriods = React.createClass({
 	onDateChange: function(itemHolder){
 		this.props.items[itemHolder.id] = itemHolder.day;
 	},
@@ -167,15 +184,29 @@ var ScheduleItemPeriods = React.createClass({
 					<div>{itemsWidgets}</div>					
 				</div>;
 	}
-});
+});*/
 
-var ScheduleItemPeriod = React.createClass({
-	onDateChange: function(event){
-	     this.props.day.day = event.target.value; 		
-	     this.props.onDateChange(this.props.day);  
+var DaysItems = React.createClass({
+	getInitialState: function(){
+		return {days: this.props.days && this.props.days.join()};
 	},
+	componentDidMount: function(){
+		var context = this;
+		$(ReactDOM.findDOMNode(this)).datepicker({
+    		format: Settings.dateFormat,
+    		multidate: true    		
+		}).on("changeDate", function(event){
+				console.log("on date change");
+	     		var daysString = event.currentTarget.value; 	     		
+	     		var days = daysString.split();
+	     		context.props.days.slice(0, context.props.days.length);
+	     		for(var i = 0; i < days.length; i++){
+	     			context.props.days.push(days[i]);
+	     		}	     		
+		});	
+	},	
 	render: function(){		
-		return <input type="date" onChange={this.onDateChange}></input>;
+		return <input className="date form-control" value={this.state.days}></input>;
 	}
 });
 
