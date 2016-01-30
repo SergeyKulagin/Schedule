@@ -10,24 +10,34 @@ var App = React.createClass({
 
 
 var AddUpdateSchedule = React.createClass({
-	
 	componentDidMount: function(){
 		var context = this;
-		$(ReactDOM.findDOMNode(this)).find(".date").datepicker({
+		$(ReactDOM.findDOMNode(this)).find(".start-date").datepicker({
         	format: Settings.dateFormat,
         	multidate: false,
     		autoclose: true
-    	}).on("changeDate", function(event){
-				console.log("on date change");
+    	}).on("changeDate", function(event){				
 	     		var date = event.currentTarget.value; 	  
 	     		context.setState({start_date: date});	   			     			     	
-		});	;
+		});	
+		$(ReactDOM.findDOMNode(this)).find(".end-date").datepicker({
+        	format: Settings.dateFormat,
+        	multidate: false,
+    		autoclose: true
+    	}).on("changeDate", function(event){				
+	     		var date = event.currentTarget.value; 	  
+	     		context.setState({end_date: date});	   			     			     	
+		});	
+
 	},
 	getInitialState: function(){
-		return {activities:[]};
+		return {period:[]};
 	},
 	render: function(){
 		return <div className="add-or-update-schedule-container container-fluid">
+			<div className="row">
+				<h2 className="col-md-12">Add schedule:</h2>
+			</div>
 			<div className="row">
 			   <div className="col-md-6">
 			   		<label>Schedule name:</label>
@@ -41,18 +51,26 @@ var AddUpdateSchedule = React.createClass({
 			    <label>Start date:</label>
 			   </div>
 			   <div className="col-md-6">
-				<input name="startDate" placeholder={Settings.dateFormat}  className="form-control date" onChange={this.onStartDateChange}/>
+				<input name="startDate" placeholder={Settings.dateFormat}  className="form-control start-date"/>
 				</div>
 			</div>
-			<ActivityItems activities={this.state.activities} />	
+			<div className="row">
+			   <div className="col-md-6">
+			    <label>End date:</label>
+			   </div>
+			   <div className="col-md-6">
+				<input name="endDate" placeholder={Settings.dateFormat}  className="form-control end-date"/>
+				</div>
+			</div>
+			<ActivityItems activities={this.state.period} />	
 			<div className="row">
 				<div className="col-md-12"> 	
-				  <div className="schedule-item-add-btn" onClick={this.onPeriodAdd}/>
+				  <div className="btn btn-default btn-xs pull-right .schedule-item-add-btn" onClick={this.onPeriodAdd}>Add activity</div>
 				</div>  
 			</div>
 			<div className="row">
 			    <div className="col-md-12">
-			    	<input type="button" className="btn btn-default pull-right" name="save" value="Save" onClick={this.onSave}/>
+			    	<input type="button" className="btn btn-primary pull-right" name="save" value="Save" onClick={this.onSave}/>
 			    </div>				
 			</div>
 		</div>;
@@ -63,9 +81,9 @@ var AddUpdateSchedule = React.createClass({
 			color: "",
 			days: []
 		};
-		var activities = this.state.activities;
+		var activities = this.state.period;
 		activities.push(defaultActivity);
-    	this.setState({activities:activities});
+    	this.setState({period:activities});
   	},
   	onNameChange: function(event){
   		this.setState({name: event.target.value});	
@@ -108,7 +126,7 @@ var ActivityItem =  React.createClass({
 	componentDidMount: function(){
 		var context = this;
 		$('select[name="colorpicker"]')
-		.simplecolorpicker({})
+		.simplecolorpicker({})		
 		.on('change', function(){
 			context.props.model.color = $('select[name="colorpicker"]').val();
 		});
@@ -155,36 +173,8 @@ var ActivityItem =  React.createClass({
 	onNameChange: function(event){
 		 this.setState({name: event.target.value});
 		 this.props.model.name = event.target.value;		 
-	},
-	onDayAdd: function(event){
-		console.log("On day add");
-		var days = this.state.days;
-		days.push("");
-		this.setState({days: days});
 	}
 });
-
-/*var ScheduleItemPeriods = React.createClass({
-	onDateChange: function(itemHolder){
-		this.props.items[itemHolder.id] = itemHolder.day;
-	},
-	render: function(){
-		var items = this.props.items;
-		if(!items){
-			return <div/>;
-		}
-		console.log("Render schedule item perios")
-		var itemsWidgets = [];
-		for (var i = 0; i < items.length; i++) {
-			var item = items[i];
-			var dateHolder = {day: item, id: i};
-			itemsWidgets.push(<ScheduleItemPeriod key={i} day={dateHolder} onDateChange={this.onDateChange}/>);
-		};
-		return <div>
-					<div>{itemsWidgets}</div>					
-				</div>;
-	}
-});*/
 
 var DaysItems = React.createClass({
 	getInitialState: function(){
@@ -198,8 +188,11 @@ var DaysItems = React.createClass({
 		}).on("changeDate", function(event){
 				console.log("on date change");
 	     		var daysString = event.currentTarget.value; 	     		
-	     		var days = daysString.split();
-	     		context.props.days.slice(0, context.props.days.length);
+	     		var days = daysString.split(",");
+	     		var previousDaysLenght = context.props.days.length;
+	     		for(var i = 0; i < previousDaysLenght; i++){
+	     			context.props.days.pop();
+	     		}
 	     		for(var i = 0; i < days.length; i++){
 	     			context.props.days.push(days[i]);
 	     		}	     		
