@@ -19,8 +19,8 @@ module.exports = function(grunt){
 				},
 				proxies: [
 				{
-					context:['/saveSchedule'],
-					host: 'http://localhost',				
+					context:['/saveSchedule', '/getSchedules'],
+					host: 'localhost',				
 					port:8080
 				}
 				]

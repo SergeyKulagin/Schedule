@@ -2,6 +2,7 @@
 
 # Ignore IDE files
 /.idea
+/server/.idea
 /*.iml
 /**/*.iml
 

@@ -3,14 +3,20 @@ var App = React.createClass({
 		return {schedules:[]};
 	},
 	componentDidMount: function(){
+		var context = this;
 		Services.Schedule.getSchedules()
 		.done(function(data){
-			this.setState({schedules:data})
+			context.setState({schedules:data})
 		});
 	},
 
 	render: function () {
-		return <SchedulesList schedules={this.state.schedules}/>;
+		return <div className="conteiner">
+					<div className="schedules-list-container">
+						<SchedulesList schedules={this.state.schedules}/>
+					</div>				
+				<AddUpdateSchedule/>
+				</div>;
 	}
 });
 

@@ -2,9 +2,9 @@
 window.SchedulesList = React.createClass({
 	render: function () {
 		return (
-				<div className="container">
+				<div className="container-fluid">
 					{this.props.schedules.map(function(schedule){
-						return <ScheduleItem name = {schedule.name} key={schedule.id}/>;	
+						return <ScheduleItem name = {schedule.name} key={schedule._id}/>;	
 					})}
 				</div>
 			);
