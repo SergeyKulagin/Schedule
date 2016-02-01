@@ -21,15 +21,22 @@ getSchedules()
 	}
 ]
 
+//returns the same json which was saved/updated in the saveSchedule
 getSchedule(String id)
 {
-	period: [
+  _id: "",
+  name: "",
+  start_date: "", //js ISO
+  end_date: "", //js ISO
+  period: [
 	{
-		color: "#000000",
-		day: "", //js iso
-		name: "На складе"
+		name: "На складе",
+		days : [],//js ISO
+		color: "#000000" 
 	}
-	... до конца года
-	]
+  ] 
 }
+
+//TODO
+getCalculatedSchedule(String id){}
 
