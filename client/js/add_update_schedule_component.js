@@ -23,7 +23,7 @@ window.AddUpdateSchedule = React.createClass({
 		return {period:[]};
 	},
 	render: function(){
-		return <div className="add-or-update-schedule-container container-fluid">
+		return <div className="add-or-update-schedule-container container-fluid pull-left">
 			<div className="row">
 				<h2 className="col-md-12">Add schedule:</h2>
 			</div>
@@ -54,7 +54,7 @@ window.AddUpdateSchedule = React.createClass({
 			<ActivityItems activities={this.state.period} />	
 			<div className="row">
 				<div className="col-md-12"> 	
-				  <div className="btn btn-default btn-xs pull-right .schedule-item-add-btn" onClick={this.onPeriodAdd}>Add activity</div>
+				  <div className="btn btn-default btn-xs pull-right schedule-item-add-btn" onClick={this.onPeriodAdd}>Add activity</div>
 				</div>  
 			</div>
 			<div className="row">
@@ -82,7 +82,11 @@ window.AddUpdateSchedule = React.createClass({
   	},
   	onSave: function(){
   		console.log(this.state);
-  		Services.Schedule.saveSchedule(this.state, "Schedule was saved", "Error saving the schedule");  		
+  		var context = this;
+  		Services.Schedule.saveSchedule(this.state, "Schedule was saved", "Error saving the schedule")
+  		.done(function(){
+  			context.props.refreshSchedules && context.props.refreshSchedules();	
+  		});  		
   	}
 });
 
