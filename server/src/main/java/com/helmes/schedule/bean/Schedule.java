@@ -39,4 +39,16 @@ public class Schedule {
   public void setName(String name) {
     this.name = name;
   }
+
+  public String getStartDate() {
+    return startDate;
+  }
+
+  public String getEndDate() {
+    return endDate;
+  }
+
+  public List<SchedulePeriod> getSchedulePeriodList() {
+    return schedulePeriodList;
+  }
 }

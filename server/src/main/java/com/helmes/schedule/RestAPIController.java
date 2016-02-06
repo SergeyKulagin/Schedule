@@ -7,10 +7,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.helmes.schedule.bean.Schedule;
-import com.helmes.schedule.bean.ScheduleCalendarItem;
-import com.helmes.schedule.bean.ScheduleCalendarList;
-import com.helmes.schedule.bean.ScheduleListItem;
+import com.helmes.schedule.bean.*;
+import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,6 +33,29 @@ public class RestAPIController {
             result.add(scheduleListItem);
         }
         return result;
+    }
+
+    @RequestMapping("/getScheduleFullInfo")
+    public String getScheduleInfo(@RequestParam(value = "id") String id) throws IOException {
+        final Schedule schedule = scheduleMongoRepository.findOne(id);
+        if(schedule == null){
+            return null;
+        }
+        final ScheduleFullItem scheduleItem = new ScheduleFullItem();
+        scheduleItem.setName(schedule.getName());
+        scheduleItem.setId(schedule.getId());
+        scheduleItem.setStartDate(schedule.getStartDate());
+        scheduleItem.setEndDate(schedule.getEndDate());
+        final List<SchedulePeriodItem> schedulePeriodItems = new ArrayList<>();
+        for (SchedulePeriod schedulePeriod : schedule.getSchedulePeriodList()) {
+            final SchedulePeriodItem schedulePeriodItem = new SchedulePeriodItem();
+            schedulePeriodItem.setName(schedulePeriod.getName());
+            schedulePeriodItem.setColor(schedulePeriod.getColor());
+            schedulePeriodItem.setDays(schedulePeriod.getDays());
+            schedulePeriodItems.add(schedulePeriodItem);
+        }
+        scheduleItem.setSchedulePeriodItemList(schedulePeriodItems);
+        return new ObjectMapper().writeValueAsString(scheduleItem);
     }
 
     @RequestMapping("/getSchedule")
