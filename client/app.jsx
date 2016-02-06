@@ -1,6 +1,6 @@
 var App = React.createClass({
 	getInitialState: function(){
-		return {schedules:[], scheduleCreate: false};
+		return {schedules:[], scheduleCreate: false, currentSchedule: {}};
 	},
 	componentDidMount: function(){
 		this.getSchedules();
@@ -18,17 +18,27 @@ var App = React.createClass({
 		this.setState({scheduleCreate: true});	
 	},
 
+	onEditSchedule: function(id){
+	     console.log("On edit schedule " + id);
+	     var context = this;
+	     Services.Schedule.getSchedule(id, "Get schedule", "Error getting schedule")
+	     .done(function(schedule){
+	     	context.setState({currentSchedule: schedule, scheduleCreate: true})	
+	     });
+	},
+
 	render: function () {
 
 		var schedulesList = <div id="schedulesList">
-		           		    	<SchedulesList  schedules={this.state.schedules}/>
+		           		    	<SchedulesList  schedules={this.state.schedules} onEditSchedule={this.onEditSchedule}/>
 		           		    </div>	;
 		var noSchedules = <div id="schdulesListNoContent" className="jumbotron" >
 								No schedules so far!
 								<input type="button" className="btn btn-default" value="Create" onClick={this.onCreateSchedule}></input>
 						  </div>;	
-		var schedulesUI = this.state.schedules && this.state.schedules.length > 0 ? schedulesList : noSchedules; 					
-		var createScheduleUI = this.state.scheduleCreate ? <AddUpdateSchedule refreshSchedules={this.getSchedules}/> : '';		
+		var schedulesUI = this.state.schedules && this.state.schedules.length > 0 ? schedulesList : noSchedules; 
+		console.log(this.state)					
+		var createScheduleUI = this.state.scheduleCreate ? <AddUpdateSchedule schedule={this.state.currentSchedule} refreshSchedules={this.getSchedules}/> : '';		
 
 		return <div className="container-fluid">
 		           <div className="row">

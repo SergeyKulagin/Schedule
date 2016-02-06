@@ -7,7 +7,9 @@ window.AddUpdateSchedule = React.createClass({
     		autoclose: true
     	}).on("changeDate", function(event){				
 	     		var date = event.currentTarget.value; 	  
-	     		context.setState({start_date: date});	   			     			     	
+	     		var schedule = context.state.schedule;
+	     		schedule.start_date = date;
+	     		context.setState({schedule: schedule});	   			     			     	
 		});	
 		$(ReactDOM.findDOMNode(this)).find(".end-date").datepicker({
         	format: Settings.dateFormat,
@@ -15,14 +17,16 @@ window.AddUpdateSchedule = React.createClass({
     		autoclose: true
     	}).on("changeDate", function(event){				
 	     		var date = event.currentTarget.value; 	  
-	     		context.setState({end_date: date});	   			     			     	
+	     		var schedule = context.state.schedule;
+	     		schedule.end_date = date;
+	     		context.setState({schedule: schedule});	   			     			     	
 		});	
 
 	},
 	getInitialState: function(){
-		return {period:[]};
+		return {schedule: this.props.schedule};		
 	},
-	render: function(){
+	render: function(){		
 		return <div className="add-or-update-schedule-container container-fluid pull-left">
 			<div className="row">
 				<h2 className="col-md-12">Add schedule:</h2>
@@ -32,7 +36,7 @@ window.AddUpdateSchedule = React.createClass({
 			   		<label>Schedule name:</label>
 			   </div>
 			   <div className="col-md-6">
-			   		<input type="text" placeholder="e.g. A bandit's schedule" className="form-control" name="scheduleName" onChange={this.onNameChange}/>
+			   		<input type="text" placeholder="e.g. A bandit's schedule" className="form-control" name="scheduleName" value={this.state.schedule.name} onChange={this.onNameChange}/>
 			   </div>			    			
 			</div>
 			<div className="row">
@@ -40,7 +44,7 @@ window.AddUpdateSchedule = React.createClass({
 			    <label>Start date:</label>
 			   </div>
 			   <div className="col-md-6">
-				<input name="startDate" placeholder={Settings.dateFormat}  className="form-control start-date"/>
+				<input name="startDate" placeholder={Settings.dateFormat} value={this.state.schedule.start_date}  className="form-control start-date"/>
 				</div>
 			</div>
 			<div className="row">
@@ -48,10 +52,10 @@ window.AddUpdateSchedule = React.createClass({
 			    <label>End date:</label>
 			   </div>
 			   <div className="col-md-6">
-				<input name="endDate" placeholder={Settings.dateFormat}  className="form-control end-date"/>
+				<input name="endDate" placeholder={Settings.dateFormat} value={this.state.schedule.end_date}  className="form-control end-date"/>
 				</div>
 			</div>
-			<ActivityItems activities={this.state.period} />	
+			<ActivityItems activities={this.state.schedule.period} />	
 			<div className="row">
 				<div className="col-md-12"> 	
 				  <div className="btn btn-default btn-xs pull-right schedule-item-add-btn" onClick={this.onPeriodAdd}>Add activity</div>
@@ -70,12 +74,17 @@ window.AddUpdateSchedule = React.createClass({
 			color: "",
 			days: []
 		};
-		var activities = this.state.period;
+		var activities = this.state.schedule.period;
 		activities.push(defaultActivity);
-    	this.setState({period:activities});
+		var schedule = this.state.schedule;
+		schedule.period = activities;
+    	this.setState({schedule: schedule});
   	},
   	onNameChange: function(event){
-  		this.setState({name: event.target.value});	
+  		var schedule = this.state.schedule;
+  		schedule.name = event.target.value;
+  		this.setState({schedule: schedule});	
+  		console.log(this.state)
   	},
   	onActivitiesChange:function(activities){
   		console.log(activities);
@@ -83,7 +92,7 @@ window.AddUpdateSchedule = React.createClass({
   	onSave: function(){
   		console.log(this.state);
   		var context = this;
-  		Services.Schedule.saveSchedule(this.state, "Schedule was saved", "Error saving the schedule")
+  		Services.Schedule.saveSchedule(this.state.schedule, "Schedule was saved", "Error saving the schedule")
   		.done(function(){
   			context.props.refreshSchedules && context.props.refreshSchedules();	
   		});  		

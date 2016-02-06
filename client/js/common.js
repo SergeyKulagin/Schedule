@@ -2,6 +2,15 @@ var Settings = {
 	dateFormat: "yyyy-mm-dd"
 };
 
+var DefaultCallbacks = {
+	ajax: function(msg){
+			return function(data){
+				console.log(msg);
+				console.log(data);	
+			};				
+	}
+};
+
 var Services = {};
 Services.Schedule = {
 	
@@ -13,12 +22,9 @@ Services.Schedule = {
 				data: JSON.stringify(data),
 				contentType: "application/json; charset=utf-8"
 			}
-		).done(function(data){
-  			console.log(successMessage);
-  		})
-  		.error(function(data){
-  			console.log(errorMessage);
-  		});
+		)
+		.done(DefaultCallbacks.ajax(successMessage))
+  		.error(DefaultCallbacks.ajax(errorMessage));
 	},
 
 	getSchedules: function(successMessage, errorMessage){
@@ -28,13 +34,22 @@ Services.Schedule = {
 				method: "get",
 				dataType: "json"	
 			}	
-		).done(function(data){
-			console.log(successMessage);
-			console.log(data);
-		})
-		.error(function(data){
-			console.log(errorMessage);
-		});
+		)
+		.done(DefaultCallbacks.ajax(successMessage))
+  		.error(DefaultCallbacks.ajax(errorMessage));
+	},
+
+	getSchedule: function(id, successMessage, errorMessage){
+		return $.ajax(
+			"/getScheduleFullInfo",
+			{
+				method: "get",
+				data: {id: id},
+				dataType: "json"	
+			}		
+		)
+		.done(DefaultCallbacks.ajax(successMessage))
+  		.error(DefaultCallbacks.ajax(errorMessage));
 	}
 
 }
