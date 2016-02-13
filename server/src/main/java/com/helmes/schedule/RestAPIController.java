@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.helmes.schedule.bean.*;
+import com.helmes.schedule.util.ScheduleDatesCalculator;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +48,14 @@ public class RestAPIController {
         scheduleItem.setStartDate(schedule.getStartDate());
         scheduleItem.setEndDate(schedule.getEndDate());
         final List<SchedulePeriodItem> schedulePeriodItems = new ArrayList<>();
-        for (SchedulePeriod schedulePeriod : schedule.getSchedulePeriodList()) {
-            final SchedulePeriodItem schedulePeriodItem = new SchedulePeriodItem();
-            schedulePeriodItem.setName(schedulePeriod.getName());
-            schedulePeriodItem.setColor(schedulePeriod.getColor());
-            schedulePeriodItem.setDays(schedulePeriod.getDays());
-            schedulePeriodItems.add(schedulePeriodItem);
+        if(schedule.getSchedulePeriodList() != null){
+            for (SchedulePeriod schedulePeriod : schedule.getSchedulePeriodList()) {
+                final SchedulePeriodItem schedulePeriodItem = new SchedulePeriodItem();
+                schedulePeriodItem.setName(schedulePeriod.getName());
+                schedulePeriodItem.setColor(schedulePeriod.getColor());
+                schedulePeriodItem.setDays(schedulePeriod.getDays());
+                schedulePeriodItems.add(schedulePeriodItem);
+            }
         }
         scheduleItem.setSchedulePeriodItemList(schedulePeriodItems);
         return new ObjectMapper().writeValueAsString(scheduleItem);
@@ -71,7 +74,7 @@ public class RestAPIController {
     }
 
     @RequestMapping("/saveSchedule")
-    public void saveSchedule(@RequestBody String jsonSchedule) {//@RequestParam(value="jsonSchedule") String jsonSchedule) {
+    public void saveSchedule(@RequestBody String jsonSchedule) {
         ObjectMapper mapper = new ObjectMapper();
         try
         {
@@ -82,6 +85,13 @@ public class RestAPIController {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    @RequestMapping("/getCalculatedSchedule")
+    public String getCalculatedSchedule(@RequestParam(value = "id") String scheduleId) throws IOException {
+        final Schedule schedule = scheduleMongoRepository.findOne(scheduleId);
+        final List<ScheduleCalendarItem> scheduleCalendarItems = ScheduleDatesCalculator.calculate(schedule);
+        return new ObjectMapper().writeValueAsString(scheduleCalendarItems);
     }
 
 }

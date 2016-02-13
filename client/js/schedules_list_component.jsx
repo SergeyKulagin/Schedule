@@ -1,4 +1,3 @@
-
 window.SchedulesList = React.createClass({
 	render: function () {
 		var context = this;
@@ -13,7 +12,7 @@ window.SchedulesList = React.createClass({
 });
 
 var ScheduleItem = React.createClass({
-	
+	 
 	render: function () {
 		return <div className="row">
 			<div className="col-md-10">{this.props.name}</div>

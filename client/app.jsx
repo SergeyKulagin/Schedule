@@ -1,6 +1,6 @@
 var App = React.createClass({
 	getInitialState: function(){
-		return {schedules:[], scheduleCreate: false, currentSchedule: {}};
+		return {schedules:[], scheduleCreate: false, currentSchedule: {period:[]}};
 	},
 	componentDidMount: function(){
 		this.getSchedules();
@@ -31,6 +31,7 @@ var App = React.createClass({
 
 		var schedulesList = <div id="schedulesList">
 		           		    	<SchedulesList  schedules={this.state.schedules} onEditSchedule={this.onEditSchedule}/>
+		           		    	<input type="button" className="btn btn-default" value="Create" onClick={this.onCreateSchedule}></input>
 		           		    </div>	;
 		var noSchedules = <div id="schdulesListNoContent" className="jumbotron" >
 								No schedules so far!
@@ -46,7 +47,7 @@ var App = React.createClass({
 		           			{schedulesUI}
 		           		</div>				
 						<div className="col-md-9">
-							{createScheduleUI}
+							<MainCalendar></MainCalendar>
 						</div>
 		           </div>					
 				</div>;
