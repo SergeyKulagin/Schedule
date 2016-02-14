@@ -3,52 +3,65 @@ var Settings = {
 };
 
 var DefaultCallbacks = {
-	ajax: function(msg){
-			return function(data){
-				console.log(msg, data);				
-			};				
+	ajax: function(msg) {
+		return function(data) {
+			console.log(msg, data);
+		};
 	}
 };
 
 var Services = {};
 Services.Schedule = {
-	
-	saveSchedule: function(data, successMessage, errorMessage){
+
+	saveSchedule: function(data, successMessage, errorMessage) {
 		return $.ajax(
-			"/saveSchedule",
-			{
-				method: "post",
-				data: JSON.stringify(data),
-				contentType: "application/json; charset=utf-8"
-			}
-		)
-		.done(DefaultCallbacks.ajax(successMessage))
-  		.error(DefaultCallbacks.ajax(errorMessage));
+				"/saveSchedule", {
+					method: "post",
+					data: JSON.stringify(data),
+					contentType: "application/json; charset=utf-8"
+				}
+			)
+			.done(DefaultCallbacks.ajax(successMessage))
+			.error(DefaultCallbacks.ajax(errorMessage));
 	},
 
-	getSchedules: function(successMessage, errorMessage){
+	getSchedules: function(successMessage, errorMessage) {
 		return $.ajax(
-			"/getSchedules",
-			{
-				method: "get",
-				dataType: "json"	
-			}	
-		)
-		.done(DefaultCallbacks.ajax(successMessage))
-  		.error(DefaultCallbacks.ajax(errorMessage));
+				"/getSchedules", {
+					method: "get",
+					dataType: "json"
+				}
+			)
+			.done(DefaultCallbacks.ajax(successMessage))
+			.error(DefaultCallbacks.ajax(errorMessage));
 	},
 
-	getSchedule: function(id, successMessage, errorMessage){
+	getSchedule: function(id, successMessage, errorMessage) {
 		return $.ajax(
-			"/getScheduleFullInfo",
-			{
-				method: "get",
-				data: {id: id},
-				dataType: "json"	
-			}		
-		)
-		.done(DefaultCallbacks.ajax(successMessage))
-  		.error(DefaultCallbacks.ajax(errorMessage));
+				"/getScheduleFullInfo", {
+					method: "get",
+					data: {
+						id: id
+					},
+					dataType: "json"
+				}
+			)
+			.done(DefaultCallbacks.ajax(successMessage))
+			.error(DefaultCallbacks.ajax(errorMessage));
+	},
+
+
+	getCalculatedSchedule: function(id, successMessage, errorMessage) {
+		return $.ajax(
+				"/getCalculatedSchedule", {
+					method: "get",
+					data: {
+						id: id
+					},
+					dataType: "json"
+				}
+			)
+			.done(DefaultCallbacks.ajax(successMessage))
+			.error(DefaultCallbacks.ajax(errorMessage));
 	}
-
 }
