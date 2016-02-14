@@ -5,8 +5,7 @@ window.MainCalendar = React.createClass({
 
 		});	
 	},
-	render: function () {
-		var context = this;
-		return <div>Hello</div>;
+	render: function () {		
+		return <div></div>;
 	}
 });

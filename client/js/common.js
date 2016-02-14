@@ -5,8 +5,7 @@ var Settings = {
 var DefaultCallbacks = {
 	ajax: function(msg){
 			return function(data){
-				console.log(msg);
-				console.log(data);	
+				console.log(msg, data);				
 			};				
 	}
 };

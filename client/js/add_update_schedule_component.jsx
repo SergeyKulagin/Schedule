@@ -1,5 +1,5 @@
 window.AddUpdateSchedule = React.createClass({
-	componentDidMount: function(){
+	componentDidMount: function(){		
 		var context = this;
 		$(ReactDOM.findDOMNode(this)).find(".start-date").datepicker({
         	format: Settings.dateFormat,
@@ -23,10 +23,13 @@ window.AddUpdateSchedule = React.createClass({
 		});	
 
 	},
-	getInitialState: function(){
+	componentWillReceiveProps: function(nextProps){		
+		this.setState({schedule: nextProps.schedule})		
+	},
+	getInitialState: function(){		
 		return {schedule: this.props.schedule};		
 	},
-	render: function(){		
+	render: function(){			
 		return <div className="add-or-update-schedule-container container-fluid pull-left">
 			<div className="row">
 				<h2 className="col-md-12">Add schedule:</h2>
@@ -83,16 +86,15 @@ window.AddUpdateSchedule = React.createClass({
   	onNameChange: function(event){
   		var schedule = this.state.schedule;
   		schedule.name = event.target.value;
-  		this.setState({schedule: schedule});	
-  		console.log(this.state)
+  		this.setState({schedule: schedule});	  		
   	},
   	onActivitiesChange:function(activities){
-  		console.log(activities);
+  		console.log("On activities change: %O", activities);
   	},
   	onSave: function(){
-  		console.log(this.state);
+  		console.log("Save schedule: %O", this.state.schedule);  		
   		var context = this;
-  		Services.Schedule.saveSchedule(this.state.schedule, "Schedule was saved", "Error saving the schedule")
+  		Services.Schedule.saveSchedule(this.state.schedule, "Schedule was saved successfully", "Error saving the schedule")
   		.done(function(){
   			context.props.refreshSchedules && context.props.refreshSchedules();	
   		});  		
@@ -101,7 +103,7 @@ window.AddUpdateSchedule = React.createClass({
 
 var ActivityItems = React.createClass({
 	render: function(){
-		var activities = this.props.activities;
+		var activities = this.props.activities;				
 		if(!activities){
 			return <div/>;
 		}
@@ -116,6 +118,9 @@ var ActivityItems = React.createClass({
 
 
 var ActivityItem =  React.createClass({
+	componentWillReceiveProps: function(nextProps){
+		this.setState(nextProps.model)		
+	},
 	getInitialState: function(){
 		return this.props.model;
 	},
@@ -181,8 +186,7 @@ var DaysItems = React.createClass({
 		$(ReactDOM.findDOMNode(this)).datepicker({
     		format: Settings.dateFormat,
     		multidate: true    		
-		}).on("changeDate", function(event){
-				console.log("on date change");
+		}).on("changeDate", function(event){				
 	     		var daysString = event.currentTarget.value; 	     		
 	     		var days = daysString.split(",");
 	     		var previousDaysLenght = context.props.days.length;
