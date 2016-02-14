@@ -12,15 +12,23 @@ window.SchedulesList = React.createClass({
 });
 
 var ScheduleItem = React.createClass({
+
+	onEdit: function(){
+		this.props.onEditSchedule(this.props.scheduleId);
+	},
+
+	onView: function(){
+		this.props.onViewSchedule(this.props.scheduleId);
+	},
 	 
 	render: function () {
 		return <div className="row">
 			<div className="col-md-8">{this.props.name}</div>
 			<div className="col-md-2">
-				<div className="btn btn-default btn-xs" onClick={this.props.onEditSchedule.bind(this, this.props.scheduleId)}>Edit</div>
+				<div className="btn btn-default btn-xs" onClick={this.onEdit}>Edit</div>
 			</div>
 			<div className="col-md-2">
-				<div className="btn btn-default btn-xs" onClick={this.props.onViewSchedule.bind(this, this.props.scheduleId)}>View</div>
+				<div className="btn btn-default btn-xs" onClick={this.onView}>View</div>
 			</div>
 		</div>;
 	}

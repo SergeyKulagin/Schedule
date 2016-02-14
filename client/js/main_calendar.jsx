@@ -4,8 +4,10 @@ window.MainCalendar = React.createClass({
 			periodItems: nextProps.schedule.periodItems
 		});
 	},
-	getInitialState: function(){		
-		return {periodItems: []};		
+	getInitialState: function() {
+		return {
+			periodItems: this.props.schedule.periodItems
+		};
 	},
 	componentDidUpdate: function() {
 		$(ReactDOM.findDOMNode(this)).fullCalendar('refetchEvents');
@@ -14,7 +16,6 @@ window.MainCalendar = React.createClass({
 		var context = this;
 		$(ReactDOM.findDOMNode(this)).fullCalendar({
 			events: function(start, end, timezone, callback) {
-				console.log("Calendar get events: %O", context.state);
 				var items = context.state.periodItems || [];
 				var events = items.map(function(item) {
 					return {
@@ -23,7 +24,6 @@ window.MainCalendar = React.createClass({
 						color: item.color
 					};
 				});
-				console.log("Calendar events are %O", events);
 				callback(events);
 			}
 		});
